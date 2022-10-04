@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "title": "Learn JavaScript with us!",
+    "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quodearum, totam illo repellat illum deserunt quae porro dignissimosquam dolore ad nisi aliquid at eveniet mollitia a. Quos, reprehenderit perspiciatis"
+  },
+  {
+    "id": 2,
+    "title": "Learn React with us!",
+    "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quodearum, totam illo repellat illum deserunt quae porro dignissimosquam dolore ad nisi aliquid at eveniet mollitia a. Quos, reprehenderit perspiciatis"
+  },
+  {
+    "id": 3,
+    "title": "Learn MongoDB with us!",
+    "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quodearum, totam illo repellat illum deserunt quae porro dignissimosquam dolore ad nisi aliquid at eveniet mollitia a. Quos, reprehenderit perspiciatis"
+  }
+]

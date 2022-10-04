@@ -12,13 +12,16 @@
 }
 
 .logIn {
-  font-size: 2.625rem;
-  cursor   : pointer;
+  font-size  : 2.625rem;
+  font-weight: 600;
+  cursor     : pointer;
 }
 
 .signUp {
-  font-size: 2.625rem;
-  cursor   : pointer;
+  color      : rgb(39 46 255);
+  font-size  : 2.625rem;
+  font-weight: 600;
+  cursor     : pointer;
 }
 
 .authSeperator {
