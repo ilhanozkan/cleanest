@@ -1,0 +1,16 @@
+@startuml ERD
+entity "Room" as room {
+  *id : ID <<generated>>
+  *name : text
+  description : text
+}
+
+entity "User" as user {
+  *id : ID <<generated>>
+  *username : text
+  *name : text
+  *roomList : [Room]
+}
+
+user }|--o{ room
+@enduml
