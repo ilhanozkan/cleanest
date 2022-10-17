@@ -1,11 +1,18 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-const LogIn: NextPage = () => {
+import Whiteboard from "../../components/whiteboard";
+
+const Room: NextPage = () => {
   const router = useRouter();
   const { room } = router.query;
 
-  return <h2>Room #{room}</h2>;
+  return (
+    <main>
+      <h2>Room #{room}</h2>
+      <Whiteboard />
+    </main>
+  );
 };
 
-export default LogIn;
+export default Room;

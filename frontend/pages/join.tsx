@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 const Rooms: NextPage = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("join room");
   };
 
   return (
