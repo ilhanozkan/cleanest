@@ -6,6 +6,7 @@ const WhiteBoard = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null | undefined>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const socket = io("http://localhost:8080");
 
   const colors = [
     "black",
@@ -20,7 +21,7 @@ const WhiteBoard = () => {
   ];
   const sizes = ["5", "10", "15", "20"];
   const [current, setCurrent] = useState({
-    color: "black",
+    color: "white",
     size: 5,
     x: 0,
     y: 0,
@@ -46,6 +47,7 @@ const WhiteBoard = () => {
     }
 
     contextRef.current = context;
+    socket.on("whiteboard", (data) => console.log(data));
   }, []);
 
   const startDrawing = ({ nativeEvent }: any) => {
@@ -67,6 +69,7 @@ const WhiteBoard = () => {
     const { offsetX, offsetY } = nativeEvent;
     contextRef.current?.lineTo(offsetX, offsetY);
     contextRef.current?.stroke();
+    socket.emit("whiteboard", "hello 😄");
   };
 
   const selectColor = (e: any) => {
