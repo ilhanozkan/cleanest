@@ -25,6 +25,9 @@ const WhiteBoard = () => {
     size: 5,
     x: 0,
     y: 0,
+    xLive: 0,
+    yLive: 0,
+    isDrawing: false,
   });
 
   useEffect(() => {
@@ -47,7 +50,9 @@ const WhiteBoard = () => {
     }
 
     contextRef.current = context;
-    socket.on("whiteboard", (data) => console.log(data));
+    socket.off("whiteboard").on("whiteboard", (data) => {
+      drawLive(data);
+    });
   }, []);
 
   const startDrawing = ({ nativeEvent }: any) => {
@@ -57,19 +62,37 @@ const WhiteBoard = () => {
     contextRef.current?.beginPath();
     contextRef.current?.moveTo(offsetX, offsetY);
     setIsDrawing(true);
+    setCurrent({ ...current, x: offsetX, y: offsetY, isDrawing: true });
   };
 
   const finishDrawing = () => {
     contextRef.current?.closePath();
     setIsDrawing(false);
+    setCurrent({ ...current, isDrawing: false });
   };
 
   const draw = ({ nativeEvent }: any) => {
     if (!isDrawing) return;
     const { offsetX, offsetY } = nativeEvent;
+
     contextRef.current?.lineTo(offsetX, offsetY);
     contextRef.current?.stroke();
-    socket.emit("whiteboard", "hello 😄");
+    setCurrent({ ...current, xLive: offsetX, yLive: offsetY });
+
+    socket.emit("whiteboard", current);
+  };
+
+  const drawLive = (current: any) => {
+    console.log("draw");
+    const { color, size, x, y, xLive, yLive, isDrawing } = current;
+
+    if (!isDrawing) finishDrawing();
+    contextRef.current!.strokeStyle = color;
+    contextRef.current!.lineWidth = size;
+    contextRef.current?.beginPath();
+    contextRef.current?.moveTo(x, y);
+    contextRef.current?.lineTo(xLive, yLive);
+    contextRef.current?.stroke();
   };
 
   const selectColor = (e: any) => {
