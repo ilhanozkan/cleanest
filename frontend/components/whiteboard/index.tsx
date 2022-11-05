@@ -7,6 +7,8 @@ const WhiteBoard = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null | undefined>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [presenter, setPresenter] = useState(true);
+  const [img, setImg] = useState(null);
   const socket = io("http://localhost:8080", {
     reconnectionAttempts: Infinity,
     timeout: 10000,
@@ -56,13 +58,17 @@ const WhiteBoard = () => {
     }
 
     contextRef.current = context;
-    socket.off("whiteboard").on("whiteboard", (data) => {
-      drawLive(data);
-    });
 
     const roomId = "abcdef123" || uuidv4();
     socket.emit("roomJoin", roomId);
+
+    socket.on("whiteboard", (data) => setImg(data));
   }, []);
+
+  useEffect(() => {
+    const canvasImg = canvasRef.current?.toDataURL();
+    setTimeout(() => socket.emit("whiteboard", canvasImg), 1000);
+  }, [current]);
 
   const startDrawing = ({ nativeEvent }: any) => {
     const { offsetX, offsetY } = nativeEvent;
@@ -89,19 +95,6 @@ const WhiteBoard = () => {
     setCurrent({ ...current, xLive: offsetX, yLive: offsetY });
   };
 
-  const drawLive = (current: any) => {
-    console.log("draw");
-    const { color, size, x, y, xLive, yLive, isDrawing } = current;
-    if (!isDrawing) finishDrawing();
-    contextRef.current!.strokeStyle = color;
-    contextRef.current!.lineWidth = size;
-    contextRef.current?.beginPath();
-    contextRef.current?.moveTo(x, y);
-    contextRef.current?.lineTo(xLive, yLive);
-    contextRef.current?.stroke();
-    socket.emit("whiteboard", current);
-  };
-
   const selectColor = (e: any) => {
     setCurrent({
       ...current,
@@ -116,6 +109,20 @@ const WhiteBoard = () => {
     });
   };
 
+  if (!presenter) {
+    return (
+      <div
+        style={{ backgroundColor: "#242424", width: "100vw", height: "100vh" }}
+      >
+        <img
+          src={img || ""}
+          style={{ width: "100vw", height: "100vh" }}
+          alt="You are watching the presenter now."
+        />
+      </div>
+    );
+  }
+
   return (
     <Container>
       <canvas
@@ -124,18 +131,7 @@ const WhiteBoard = () => {
         onMouseMove={draw}
         ref={canvasRef}
       />
-      <div
-        style={{
-          position: "absolute",
-          height: "100vh",
-          width: "12rem",
-          top: 0,
-          right: 0,
-          backgroundColor: "lightblue",
-        }}
-      >
-        Chat section
-      </div>
+      <ChatContainer>Chat section</ChatContainer>
       <Options>
         <ColorsContainer>
           {colors.map((color) => (
@@ -149,6 +145,7 @@ const WhiteBoard = () => {
           ))}
         </SizesContainer>
       </Options>
+      <button onClick={() => setPresenter(false)}>Presenter</button>
     </Container>
   );
 };
@@ -156,6 +153,15 @@ const WhiteBoard = () => {
 const Container = styled.div`
   position: relative;
   background-color: #242424;
+`;
+
+const ChatContainer = styled.div`
+  position: absolute;
+  height: 100vh;
+  width: 12rem;
+  top: 0;
+  right: 0;
+  background-color: lightblue;
 `;
 
 const ColorsContainer = styled.div``;
